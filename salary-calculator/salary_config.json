@@ -1,0 +1,17 @@
+{
+  "project_root": "/Users/flw/salary",
+  "web_app_path": "/Users/flw/salary/web_app",
+  "output_base_dir": "~/salary_output",
+  "description": "salary-calculator Skill 配置文件",
+  "note": "如果salary程序位置变化，只需要更新这个config中的project_root路径",
+  "default_config": {
+    "work_start_time": "09:00",
+    "work_end_time": "18:00",
+    "work_hours_per_day": 8,
+    "meal_allowance": 15,
+    "late_deduction": 50,
+    "saturday_allowance": 50,
+    "holiday_allowance": 100,
+    "perfect_attendance_bonus": 200
+  }
+}

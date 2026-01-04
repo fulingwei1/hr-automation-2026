@@ -5,30 +5,69 @@ salary-calculator Skill Wrapper
 
 Usage:
     python salary_wrapper.py --month 2025-01 --attendance-file path/to/file.xlsx
+
+重要：
+- 此脚本依赖于 /Users/flw/salary 项目
+- 如果salary项目位置变化，请更新 salary_config.json 中的 project_root
 """
 
 import sys
 import os
+import json
 import subprocess
 import argparse
 from pathlib import Path
 from datetime import datetime
 
-# 指向salary项目根目录
-SALARY_PROJECT_ROOT = Path.home() / "salary"
-SALARY_WEB_APP = SALARY_PROJECT_ROOT / "web_app"
+# 获取配置文件路径
+SKILL_DIR = Path(__file__).parent
+CONFIG_FILE = SKILL_DIR / "salary_config.json"
+
+def load_config():
+    """从配置文件加载salary项目路径"""
+    if not CONFIG_FILE.exists():
+        raise FileNotFoundError(
+            f"❌ 配置文件不存在: {CONFIG_FILE}\n"
+            f"请确保salary_config.json在Skill目录中"
+        )
+
+    with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
+        config = json.load(f)
+
+    return config
+
+# 加载配置
+try:
+    config = load_config()
+    SALARY_PROJECT_ROOT = Path(config['project_root'])
+    SALARY_WEB_APP = Path(config['web_app_path'])
+except Exception as e:
+    print(f"❌ 配置加载失败: {e}")
+    sys.exit(1)
 
 
 def validate_environment():
     """检查环境是否正确配置"""
     if not SALARY_PROJECT_ROOT.exists():
-        print(f"❌ 错误: salary项目不存在于 {SALARY_PROJECT_ROOT}")
+        print(f"❌ 错误: salary项目不存在")
+        print(f"   配置的路径: {SALARY_PROJECT_ROOT}")
+        print(f"\n💡 解决方案:")
+        print(f"   1. 检查salary项目是否真的在该位置")
+        print(f"   2. 如果salary项目位置改变了，请更新:")
+        print(f"      {CONFIG_FILE}")
+        print(f"   3. 修改其中的 'project_root' 为正确的路径")
         return False
 
     if not (SALARY_WEB_APP / "attendance").exists():
-        print(f"❌ 错误: attendance模块不存在于 {SALARY_WEB_APP}")
+        print(f"❌ 错误: attendance核心模块不存在")
+        print(f"   检查路径: {SALARY_WEB_APP / 'attendance'}")
+        print(f"\n💡 解决方案:")
+        print(f"   请确保salary项目的web_app/attendance目录完整")
         return False
 
+    print(f"✅ 环境检查通过")
+    print(f"   salary项目路径: {SALARY_PROJECT_ROOT}")
+    print(f"   web_app路径: {SALARY_WEB_APP}")
     return True
 
 
